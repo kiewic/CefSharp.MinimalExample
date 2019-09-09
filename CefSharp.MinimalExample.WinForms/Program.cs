@@ -11,6 +11,7 @@ namespace CefSharp.MinimalExample.WinForms
 {
     public class Program
     {
+
         [STAThread]
         public static void Main()
         {
@@ -23,9 +24,15 @@ namespace CefSharp.MinimalExample.WinForms
 
             var settings = new CefSettings()
             {
+                MultiThreadedMessageLoop = false,
                 //By default CefSharp will use an in-memory cache, you need to specify a Cache Folder to persist data
                 CachePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CefSharp\\Cache")
             };
+
+            Timer timer = new Timer();
+            timer.Interval = 16;
+            timer.Tick += Timer_Tick;
+            timer.Start();
 
             //Example of setting a command line argument
             //Enables WebRTC
@@ -36,6 +43,11 @@ namespace CefSharp.MinimalExample.WinForms
 
             var browser = new BrowserForm();
             Application.Run(browser);
+        }
+
+        private static void Timer_Tick(object sender, EventArgs e)
+        {
+            Cef.DoMessageLoopWork();
         }
     }
 }
